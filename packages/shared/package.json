@@ -1,0 +1,14 @@
+{
+  "name": "@hotel/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "dev": "echo \"No dev step required for shared\"",
+    "build": "echo \"No build step required for shared\""
+  }
+}
