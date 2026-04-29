@@ -23,7 +23,7 @@ function Layout({ children }) {
       {children}
       <footer className="app-footer">
         <p>
-          Monorepo demo — start API and UI with{" "}
+          Hotel monorepo demo — start API and UI with{" "}
           <code className="inline-code">npm run dev</code> from the repo root.
         </p>
       </footer>
