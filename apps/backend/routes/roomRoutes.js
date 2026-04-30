@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   getRooms,
+  getRoomById,
   createRoom,
   updateRoom,
   deleteRoom
@@ -10,6 +11,7 @@ const router = express.Router();
 
 router.get("/", getRooms);
 router.post("/", createRoom);
+router.get("/:id", getRoomById);
 router.patch("/:id", updateRoom);
 router.delete("/:id", deleteRoom);
 

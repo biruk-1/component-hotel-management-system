@@ -23,6 +23,24 @@ const getRooms = (_req, res) => {
   }
 };
 
+const getRoomById = (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id < 1) {
+      return res.status(400).json({ message: "Invalid room id" });
+    }
+
+    const room = rooms.find((r) => r.id === id);
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    return res.status(200).json(room);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch room" });
+  }
+};
+
 const createRoom = (req, res) => {
   try {
     const { name, status } = req.body || {};
@@ -119,6 +137,7 @@ const deleteRoom = (req, res) => {
 
 module.exports = {
   getRooms,
+  getRoomById,
   createRoom,
   updateRoom,
   deleteRoom
