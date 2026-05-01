@@ -27,3 +27,10 @@ export function formatStatusLabel(status) {
   const key = String(status).toLowerCase();
   return ROOM_STATUS_LABELS[key] ?? status;
 }
+
+export {
+  LEXICON_ENTRIES,
+  findLexiconSlug,
+  lexiconCountByZone
+} from "./lexicon/catalog.js";
+export { TARIFF_BANDS, pickTariffBand } from "./pricing/tariffBands.js";
