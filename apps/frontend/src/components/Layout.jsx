@@ -1,3 +1,6 @@
+import MetaInsightsPeek from "./MetaInsightsPeek";
+import OperationalGuide from "./OperationalGuide";
+
 function Layout({ children }) {
   return (
     <div className="app-shell">
@@ -21,6 +24,12 @@ function Layout({ children }) {
         </div>
       </header>
       {children}
+      <div className="app-panels">
+        <div className="app-panels-inner">
+          <MetaInsightsPeek />
+          <OperationalGuide />
+        </div>
+      </div>
       <footer className="app-footer">
         <p>
           Hotel monorepo demo — start API and UI with{" "}
@@ -30,5 +39,4 @@ function Layout({ children }) {
     </div>
   );
 }
-
 export default Layout;
