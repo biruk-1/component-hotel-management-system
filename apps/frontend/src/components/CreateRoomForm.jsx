@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatStatusLabel, ROOM_STATUSES } from "../constants/roomStatus";
 
 function CreateRoomForm({ onCreate }) {
   const [name, setName] = useState("");
@@ -10,44 +11,59 @@ function CreateRoomForm({ onCreate }) {
     if (!name.trim()) return;
 
     setSubmitting(true);
-    await onCreate({
-      name: name.trim(),
-      status
-    });
-    setName("");
-    setStatus("available");
-    setSubmitting(false);
+    try {
+      await onCreate({
+        name: name.trim(),
+        status
+      });
+      setName("");
+      setStatus("available");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <section className="form-section">
-      <h2>Create Room</h2>
+    <section className="form-section" aria-labelledby="create-room-heading">
+      <h2 id="create-room-heading" className="section-heading">
+        Add a room
+      </h2>
+      <p className="form-lead">
+        New rooms appear in the directory immediately and sync with the demo API.
+      </p>
       <form onSubmit={handleSubmit} className="room-form">
-        <label htmlFor="name">Room Name</label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Executive Suite"
-          required
-        />
+        <div className="field-group">
+          <label htmlFor="name">Room name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Executive Suite"
+            autoComplete="off"
+            required
+          />
+        </div>
 
-        <label htmlFor="status">Status</label>
-        <select
-          id="status"
-          name="status"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
-          <option value="available">available</option>
-          <option value="occupied">occupied</option>
-          <option value="maintenance">maintenance</option>
-        </select>
+        <div className="field-group">
+          <label htmlFor="status">Initial status</label>
+          <select
+            id="status"
+            name="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {ROOM_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {formatStatusLabel(s)}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Creating..." : "Create Room"}
+        <button type="submit" className="btn-primary" disabled={submitting}>
+          {submitting ? "Adding…" : "Add room"}
         </button>
       </form>
     </section>

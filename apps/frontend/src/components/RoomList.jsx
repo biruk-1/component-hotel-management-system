@@ -1,20 +1,31 @@
-function RoomList({ rooms }) {
+import RoomCard from "./RoomCard";
+
+function RoomList({ rooms, totalCount, onUpdateStatus, onDelete }) {
   if (!rooms.length) {
-    return <p>No rooms found. Create one to get started.</p>;
+    const isGlobalEmpty = totalCount === 0;
+    return (
+      <div className="empty-state" role="status">
+        <p className="empty-state-title">
+          {isGlobalEmpty ? "No rooms yet" : "No rooms match"}
+        </p>
+        <p className="empty-state-hint">
+          {isGlobalEmpty
+            ? "Create your first room with the form above to see it listed here."
+            : "Try another filter or search, or add a new room above."}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <section>
-      <h2>Rooms</h2>
-      <ul className="room-list">
+    <section className="room-grid-section" aria-labelledby="rooms-heading">
+      <h2 id="rooms-heading" className="section-heading">
+        Room directory
+      </h2>
+      <ul className="room-grid">
         {rooms.map((room) => (
-          <li key={room.id} className="room-item">
-            <div>
-              <strong>{room.name}</strong>
-            </div>
-            <span className={`status status-${room.status.toLowerCase()}`}>
-              {room.status}
-            </span>
+          <li key={room.id}>
+            <RoomCard room={room} onUpdateStatus={onUpdateStatus} onDelete={onDelete} />
           </li>
         ))}
       </ul>
