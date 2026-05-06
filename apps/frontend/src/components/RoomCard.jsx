@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { formatStatusLabel, ROOM_STATUSES } from "@hotel/shared";
+import { formatStatusLabel, ROOM_STATUSES } from "../constants/roomStatus";
 
 function RoomCard({ room, onUpdateStatus, onDelete }) {
   const [busy, setBusy] = useState(false);

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { API_URL } from "@hotel/shared";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ROOMS_COLLECTION_URL } from "../constants/api";
 import ApiStatus from "../components/ApiStatus";
 import CreateRoomForm from "../components/CreateRoomForm";
 import LoadingSkeleton from "../components/LoadingSkeleton";
@@ -14,6 +14,8 @@ function RoomsPage() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState(null);
+  const [directorySyncedAt, setDirectorySyncedAt] = useState(null);
+  const searchRef = useRef(null);
 
   const showToast = useCallback((message, variant = "success") => {
     setToast({ message, variant });
@@ -30,13 +32,14 @@ function RoomsPage() {
       setLoading(true);
       setFetchError("");
 
-      const response = await fetch(`${API_URL}/api/rooms`);
+      const response = await fetch(ROOMS_COLLECTION_URL);
       if (!response.ok) {
         throw new Error("Failed to load rooms");
       }
 
       const data = await response.json();
       setRooms(data);
+      setDirectorySyncedAt(new Date());
     } catch (err) {
       setFetchError(
         err.message || "Something went wrong while loading rooms."
@@ -50,9 +53,51 @@ function RoomsPage() {
     fetchRooms();
   }, [fetchRooms]);
 
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (
+        event.defaultPrevented ||
+        event.key !== "/" ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const target = event.target;
+      const tag = target?.tagName?.toLowerCase();
+      const typing =
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        target?.isContentEditable;
+
+      if (typing) {
+        return;
+      }
+
+      event.preventDefault();
+      searchRef.current?.focus();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const syncedLabel = useMemo(() => {
+    if (!directorySyncedAt) {
+      return "";
+    }
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(directorySyncedAt);
+  }, [directorySyncedAt]);
+
   const handleCreateRoom = async (newRoom) => {
     try {
-      const response = await fetch(`${API_URL}/api/rooms`, {
+      const response = await fetch(ROOMS_COLLECTION_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -78,7 +123,7 @@ function RoomsPage() {
 
   const handleUpdateStatus = async (id, status) => {
     try {
-      const response = await fetch(`${API_URL}/api/rooms/${id}`, {
+      const response = await fetch(`${ROOMS_COLLECTION_URL}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status })
@@ -99,7 +144,7 @@ function RoomsPage() {
 
   const handleDeleteRoom = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/api/rooms/${id}`, {
+      const response = await fetch(`${ROOMS_COLLECTION_URL}/${id}`, {
         method: "DELETE"
       });
 
@@ -176,6 +221,7 @@ function RoomsPage() {
           <div className="search-field">
             <label htmlFor="room-search">Search</label>
             <input
+              ref={searchRef}
               id="room-search"
               type="search"
               placeholder="Name or room number…"
@@ -183,10 +229,20 @@ function RoomsPage() {
               onChange={(e) => setSearch(e.target.value)}
               autoComplete="off"
               disabled={loadFailedEmpty}
+              aria-describedby="room-search-hint"
             />
+            <p id="room-search-hint" className="search-shortcut-hint">
+              Press <kbd className="kbd-pill">/</kbd> to jump here from anywhere.
+            </p>
           </div>
           <StatsBar rooms={rooms} filter={filter} onFilterChange={setFilter} />
         </section>
+
+        {syncedLabel && !loadFailedEmpty ? (
+          <p className="directory-meta" role="status">
+            Directory last synced {syncedLabel}.
+          </p>
+        ) : null}
 
         {fetchError ? (
           <div className="banner banner-error" role="alert">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "@hotel/shared";
+import { HEALTH_CHECK_URL } from "../constants/api";
 
 function ApiStatus() {
   const [state, setState] = useState({ loading: true, ok: false });
@@ -9,8 +9,7 @@ function ApiStatus() {
 
     const ping = async () => {
       try {
-        const res = await fetch(`${API_URL}/health`, { method: "GET" });
-        if (!cancelled) {
+        const res = await fetch(HEALTH_CHECK_URL, { method: "GET" });        if (!cancelled) {
           setState({ loading: false, ok: res.ok });
         }
       } catch {
