@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { formatStatusLabel, ROOM_STATUSES } from "../constants/roomStatus";
+import { formatStatusLabel, ROOM_STATUSES } from "@hotel/shared";
 
 function CreateRoomForm({ onCreate }) {
   const [name, setName] = useState("");

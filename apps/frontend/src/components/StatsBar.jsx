@@ -1,4 +1,4 @@
-import { formatStatusLabel, ROOM_STATUSES } from "../constants/roomStatus";
+import { formatStatusLabel, ROOM_STATUSES } from "@hotel/shared";
 
 function StatsBar({ rooms, filter, onFilterChange }) {
   const counts = ROOM_STATUSES.reduce(
