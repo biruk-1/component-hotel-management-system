@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getRooms,
   getRoomById,
+  getRoomStatsSummary,
   createRoom,
   updateRoom,
   deleteRoom
@@ -10,6 +11,7 @@ const {
 const router = express.Router();
 
 router.get("/", getRooms);
+router.get("/stats/summary", getRoomStatsSummary);
 router.post("/", createRoom);
 router.get("/:id", getRoomById);
 router.patch("/:id", updateRoom);

@@ -8,6 +8,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+app.disable("x-powered-by");
+app.use((_req, res, next) => {
+  res.setHeader("X-API-Version", "1");
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 

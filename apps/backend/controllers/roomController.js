@@ -135,9 +135,29 @@ const deleteRoom = (req, res) => {
   }
 };
 
+const getRoomStatsSummary = (_req, res) => {
+  try {
+    const byStatus = { available: 0, occupied: 0, maintenance: 0 };
+    for (const room of rooms) {
+      const s = normalizeStatus(room.status);
+      if (Object.prototype.hasOwnProperty.call(byStatus, s)) {
+        byStatus[s] += 1;
+      }
+    }
+    return res.status(200).json({
+      total: rooms.length,
+      byStatus,
+      computedAt: new Date().toISOString()
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to compute room stats" });
+  }
+};
+
 module.exports = {
   getRooms,
   getRoomById,
+  getRoomStatsSummary,
   createRoom,
   updateRoom,
   deleteRoom
