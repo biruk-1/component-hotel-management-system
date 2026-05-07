@@ -7,6 +7,11 @@ export const roomsApiUrl = `${API_URL}/api/rooms`;
 export const ROOMS_API_PATH = "/api/rooms";
 export const HEALTH_API_PATH = "/health";
 
+/** Full URL for PATCH/DELETE `/api/rooms/:id`. */
+export function roomDetailUrl(id) {
+  return `${API_URL}${ROOMS_API_PATH}/${encodeURIComponent(String(id))}`;
+}
+
 /** Room lifecycle values used by API and UI (lowercase). */
 export const ROOM_STATUSES = ["available", "occupied", "maintenance"];
 
